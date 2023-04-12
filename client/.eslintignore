@@ -1,2 +1,9 @@
 /node_modules
 /public/build
+console.log()
+eslint-disable-next-line linebreak-style
+/* eslint-disable react/button-has-type */
+/* eslint-disable import/no-extraneous-dependencies */
+/* eslint-disable react/void-dom-elements-no-children */
+/* eslint-disable import/no-unresolved */
+/* eslint-disable linebreak-style */
