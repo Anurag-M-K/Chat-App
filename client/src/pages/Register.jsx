@@ -30,6 +30,11 @@ const navigate = useNavigate()
         theme:'dark',
 
   }
+  useEffect(()=>{
+    if(localStorage.getItem(import.meta.env.VITE_APP_CHAT_APP_USER_SECRETE)){
+      navigate('/')
+    }
+  },[])
   const handleChange = (e) => {
     setValues({ ...values, [e.target.name]: e.target.value });
   };
