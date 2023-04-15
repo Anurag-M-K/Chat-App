@@ -23,9 +23,33 @@ export default function SetAvatar() {
     theme: "dark",
   };
 
+  useEffect(()=>{
+    if(!localStorage.getItem(import.meta.env.VITE_APP_CHAT_APP_USER_SECRETE)){
+      navigate("/login")
+    }
+  },[])
+  // Implement the functionality to set the profile picture using the selected avatar
   const setProfilePicture = async () => {
-    // Implement the functionality to set the profile picture using the selected avatar
     
+    if(selectedAvatar === undefined){
+      toast.error("Please select an image",toastOptions)
+    }else{
+      const user = await JSON.parse(localStorage.getItem(import.meta.env.VITE_APP_CHAT_APP_USER_SECRETE))
+      console.log("avatars[selectedAvatar]",avatars[selectedAvatar])
+      const  {data} = await axios.post(`${setAvatarRoute}/${user[0]._id}`,{
+        image: avatars[selectedAvatar],
+      })
+
+      console.log(data)
+      if(data.isSet){
+        user.isAvatarImageSet  = true;
+        user.avatarImage = data.image;
+        localStorage.setItem(import.meta.env.VITE_APP_CHAT_APP_USER_SECRETE,JSON.stringify(user));
+        navigate("/")
+      }else{
+        toast.error("Error seting avatar, please try again",toastOptions)
+      }
+    }
   };
 
   useEffect(()=>{
@@ -35,11 +59,21 @@ export default function SetAvatar() {
 "https://res.cloudinary.com/dmvxmurxw/image/upload/v1681500157/new_3_p0rwfa.avif",
 "https://res.cloudinary.com/dmvxmurxw/image/upload/v1681500157/new_g36l7j.avif"]
   setAvatars(avatarImg)
+  setIsLoading(false)
   },[])
 
   return (
+
+
+    
     <>
-      <Container>
+
+    {
+      isLoading ? <Container>
+        <img src={loader}  alt="loader" className="loader" />
+      </Container> : (
+
+        <Container>
         <div className="title">
           <h1 className="text-white font-bold ">Pick an avatar as your profile picture</h1>
         </div>
@@ -47,8 +81,8 @@ export default function SetAvatar() {
           {avatars.map((avatar, index) => {
             return (
               <div
-                key={index}
-                className={`avatar ${selectedAvatar === index ? "selected" : ""}`}
+              key={index}
+              className={`avatar ${selectedAvatar === index ? "selected" : ""}`}
               >
                 <img
                   className="w-12 rounded-full cursor-pointer "
@@ -56,13 +90,15 @@ export default function SetAvatar() {
                   alt="avatar"
                   key={avatar}
                   onClick={() => setSelectedAvatar(index)}
-                />
+                  />
               </div>
             );
           })}
         </div>
-        <button className="w-56 cursor-pointer p-1rem 2rem uppercase font-bold px-2 py-1 transition duration-500 ease-in-out  bg-extra-400 hover:bg-blue-600 rounded-md border-stone-400 text-lime-50 h-8">Set as Profile Picture</button>
+        <button onClick={setProfilePicture} className="w-56 cursor-pointer p-1rem 2rem uppercase font-bold px-2 py-1 transition duration-500 ease-in-out  bg-extra-400 hover:bg-blue-600 rounded-md border-stone-400 text-lime-50 h-8">Set as Profile Picture</button>
       </Container>
+          )
+        }
       <ToastContainer />
     </>
   );

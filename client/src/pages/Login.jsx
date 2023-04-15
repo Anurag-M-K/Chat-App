@@ -51,7 +51,8 @@ const navigate = useNavigate()
     toast.error(data.msg,toastOptions)
   }
   if(data.status === true ){
-    localStorage.setItem(import.meta.env.VITE_APP_CHAT_APP_USER_SECRETE,
+    console.log(data)
+    localStorage.setItem("chat-app-user",
       JSON.stringify(data.user)
       );
   }
